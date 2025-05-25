@@ -40,17 +40,60 @@
                     </div>
                 </div>
 
-                @if (count($movie['videos']['results']) > 0 )
-                    <div class="mt-12">
-                        <a href="https://www.youtube.com/watch?v={{ $movie['videos']['results'][0]['key'] }}" class="flex inline-flex items-center bg-orange-500 text-gray-900 rounded font-semi-bold px-5
-                        py-4 hover:bg-orange-600 transition ease-in-out duration-150">
-                            <svg class="w-6 fill-current" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"
-                            /><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48
-                            10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                            <span class="ml-2">Play Trailer</span>
-                        </a>
+                <div x-data="{ isOpen: false }"> {{-- wrap in div for alpine state config --}}
+                    {{-- Trailer Button --}}
+                    @if (count($movie['videos']['results']) > 0 )
+                        <div class="mt-12">
+                            <button
+                                @click="isOpen = true"
+                                class="flex inline-flex items-center bg-orange-500 text-gray-900 rounded font-semi-bold px-5
+                                py-4 hover:bg-orange-600 transition ease-in-out duration-150">
+                                <svg class="w-6 fill-current" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"
+                                /><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48
+                                10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                                <span class="ml-2">Play Trailer</span>
+                            </button>
+                        </div>
+                    @endif
+                    {{-- end Trailer Button --}}
+
+                    {{-- Trailer Modal --}}
+                    <div
+                        style="background: rgba(0, 0, 0, 0.5);"
+                        class="fixed top-0 left-0 w-full h-full flex items-center shadow-lg overflow-y-auto z-50"
+                        x-show="isOpen"
+                        x-transition.opacity
+                        x-transition.duration.500ms
+                    >
+                        <div class="container mx-auto lg:px-32 rounded-lg overflow-y-auto">
+                            <div class="bg-gray-900 rounded-lg">
+                                <div class="flex justify-end pr-4 pt-2">
+                                    <button
+                                        @click="isOpen = false"
+                                        @click.away="isOpen = false"
+                                        class="text-3xl hover:text-gray-300 leading-none"
+                                    >
+                                        &times;
+                                    </button>
+                                </div>
+                                <div>
+                                    <div class="modal-body px-8 py-8">
+                                        <div class="responsive-container overflow-hidden relative"
+                                            style="padding-top: 56.25%;"
+                                        >
+                                            <iframe width="560" height="315" class="responsive-iframe absolute top-0 left-0 w-full h-full"
+                                                src="https://www.youtube.com/embed/{{ $movie['videos']['results'][0]['key'] }}"
+                                                style="border: 0;" allow="autoplay; encrypted-media" allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                @endif
+                    {{-- end Trailer Modal --}}
+                </div>
+
             </div>
         </div>
     </div>
@@ -82,21 +125,57 @@
     </div>
     {{--end movie cast --}}
 
-    {{-- images --}}
-    <div class="movie-cast border-b border-gray-800">
+    {{-- Images --}}
+    <div class="movie-images border-b border-gray-800" x-data="{ isOpen: false, image: '' }">
         <div class="container mx-auto px-4 py-16">
             <h2 class="text-4xl font-semibold">Images</h2>
             <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach ($movie['images']['backdrops'] as $image)
-                    @if ($loop->index < 9)
+                    @if ($loop->index < 6)
                         <div class="mt-8">
-                            <a href="#">
+                            <a
+                                @click.prevent="
+                                    isOpen = true;
+                                    image = 'https://image.tmdb.org/t/p/original/{{ $image['file_path'] }}';
+                                "
+                                href="#"
+                            >
                                 <img src="https://image.tmdb.org/t/p/w500/{{ $image['file_path'] }}" alt="" class="hover:opacity-75 transition ease-in-out duration-150">
                             </a>
                         </div>
                     @endif
                 @endforeach
             </div>
+
+            {{-- Image Modal --}}
+            <div
+                style="background: rgba(0, 0, 0, 0.5);"
+                class="fixed top-0 left-0 w-full h-full flex items-center shadow-lg overflow-y-auto z-50"
+                x-show="isOpen"
+                x-transition.opacity
+                x-transition.duration.500ms
+            >
+                <div class="container mx-auto lg:px-32 rounded-lg overflow-y-auto">
+                    <div class="bg-gray-900 rounded-lg">
+                        <div class="flex justify-end pr-4 pt-2">
+                            <button
+                                @click="isOpen = false"
+                                @keydown.escape.window="isOpen = false"
+                                @click.away="isOpen = false"
+                                class="text-3xl hover:text-gray-300 leading-none"
+                            >
+                                &times;
+                            </button>
+                        </div>
+                        <div>
+                            <div class="modal-body px-8 py-8">
+                                <img :src="image" alt="" class="w-full">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- end Image Modal --}}
         </div>
     </div>
     {{-- end images --}}

@@ -3,7 +3,14 @@
         wire:model.live.debounce.500ms="search"
         type="text"
         class="bg-gray-800 w-64 px-4 pl-8 py-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-        placeholder="Search"
+        placeholder="Press '/' or Click to Search"
+        x-ref="search"
+        @keydown.window="
+            if (event.keyCode === 191) {
+                event.preventDefault();
+                $refs.search.focus();
+            }
+        "
         @focus="isOpen = true"
         @keydown.escape.window="isOpen = false"
         @keydown.shift.tab="isOpen = false"
