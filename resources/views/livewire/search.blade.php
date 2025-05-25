@@ -1,5 +1,15 @@
-<li class="relative mt-3 md:mt-0">
-    <input wire:model.live.debounce.500ms="search" type="text" class="bg-gray-800 w-64 px-4 pl-8 py-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Search">
+<li class="relative mt-3 md:mt-0" x-data="{ isOpen: true }" @click.away="isOpen = false">
+    <input
+        wire:model.live.debounce.500ms="search"
+        type="text"
+        class="bg-gray-800 w-64 px-4 pl-8 py-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+        placeholder="Search"
+        @focus="isOpen = true"
+        @keydown.escape.window="isOpen = false"
+        @keydown.shift.tab="isOpen = false"
+        @keydown.*="isOpen = true"
+
+    >
     <div class="absolute top-0">
         <svg class="w-5 h-5 text-gray-400 mt-2 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -15,12 +25,19 @@
     </div>
 
     @if (strlen($search) > 2)
-        <div class="absolute bg-gray-800 w-64 mt-4 text-sm">
+        <div class="z-50 absolute bg-gray-800 w-64 mt-4 text-sm"
+        x-show="isOpen"
+        x-transition.opacity
+        x-transition.duration.500ms
+        >
             @if ($searchResults->count() > 0)
                 <ul>
                     @foreach ($searchResults as $result)
                         <li class="border-b border-gray-700">
-                            <a href="{{ route('movies.show_movie', $result['id']) }}" class="block hover:bg-gray-700 px-4 py-2 flex items-center">
+                            <a href="{{ route('movies.show_movie', $result['id']) }}"
+                                class="block hover:bg-gray-700 px-4 py-2 flex items-center"
+                                @if ($loop->last) @keydown.tab="isOpen = false" @endif
+                            >
                                 @if ($result['poster_path'])
                                     <img src="https://image.tmdb.org/t/p/w500/{{ $result['poster_path'] }}" alt="poster" class="w-8">
                                 @else

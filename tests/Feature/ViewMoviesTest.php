@@ -5,6 +5,7 @@ namespace Tests\Feature;
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Http;
+use Livewire\Livewire;
 
 class ViewMoviesTest extends TestCase
 {
@@ -29,13 +30,28 @@ class ViewMoviesTest extends TestCase
     public function test_the_movie_page_shows_correctly()
     {
         Http::fake([
-            'https://api.themoviedb.org/3/movie/*' => $this->fakeMovieResponse()
+            'https://api.themoviedb.org/3/movie?query=Fake+Minecraft+Movie' => $this->fakeMovieResponse()
         ]);
 
         $response = $this->get(route('movies.show_movie', 950387));
 
         $response->assertSuccessful();
         $response->assertSee('Fake Minecraft Movie');
+    }
+
+
+    //Test NOT working
+    public function test_the_search_works_correctly()
+    {
+        Http::fake([
+            'https://api.themoviedb.org/3/search/movie*' => $this->fakeSearchResponse()
+        ]);
+
+        $test = Livewire::test('search')
+            ->set('search', 'Fake Minecraft Movie')
+            ->call('$refresh'); // Force Livewire to refresh the component
+
+        $test->assertSee('Fake Minecraft Movie');
     }
 
     private function fakePopularMoviesResponse()
@@ -159,6 +175,30 @@ class ViewMoviesTest extends TestCase
             ],
             'reviews' => [
                 'results' => []
+            ]
+        ], 200);
+    }
+
+    private function fakeSearchResponse()
+    {
+        return Http::response([
+            'results' => [
+                [
+                    'adult' => false,
+                    'backdrop_path' => '/2Nti3gYAX513wvhp8IiLL6ZDyOm.jpg',
+                    'genre_ids' => [16, 12, 35],
+                    'id' => 950387,
+                    'original_language' => 'en',
+                    'original_title' => 'Fake Minecraft Movie',
+                    'overview' => 'Four misfits find themselves struggling with ordinary problems when they are suddenly pulled through a mysterious portal into the Overworld',
+                    'popularity' => 713.0295,
+                    'poster_path' => '/yFHHfHcUgGAxziP1C3lLt0q2T4s.jpg',
+                    'release_date' => '2025-03-31',
+                    'title' => 'Fake Minecraft Movie',
+                    'video' => false,
+                    'vote_average' => 6.5,
+                    'vote_count' => 1397
+                ]
             ]
         ], 200);
     }
