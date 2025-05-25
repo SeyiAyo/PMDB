@@ -99,4 +99,54 @@
             </div>
         </div>
     </div>
+    {{-- end images --}}
+
+    {{-- Reviews --}}
+    <div class="movie-reviews border-b border-gray-800">
+        <div class="container mx-auto px-4 py-16">
+            <h2 class="text-4xl font-semibold">Reviews</h2>
+            @if (isset($movie['reviews']['results']) && count($movie['reviews']['results']) > 0)
+                <div class="grid grid-cols-1 gap-6 mt-8">
+                    @foreach ($movie['reviews']['results'] as $review)
+                        <div class="bg-gray-800 rounded-lg p-6 mb-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-xl font-semibold text-white mr-4 flex-shrink-0 overflow-hidden">
+                                    @if(isset($review['author_details']['avatar_path']) && $review['author_details']['avatar_path'])
+                                        <img
+                                            src="https://image.tmdb.org/t/p/w45{{ $review['author_details']['avatar_path'] }}"
+                                            alt="{{ $review['author'] }}"
+                                            class="w-full h-full object-cover"
+                                            onerror="this.style.display='none'; this.parentNode.innerHTML='{{ substr($review['author'], 0, 1) }}';"
+                                        >
+                                    @else
+                                        {{ substr($review['author'], 0, 1) }}
+                                    @endif
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-semibold text-white">{{ $review['author'] }}</h3>
+                                        @if(isset($review['author_details']['rating']))
+                                            <div class="flex items-center bg-gray-700 px-2 py-1 rounded text-sm">
+                                                <span class="text-yellow-400 mr-1">★</span>
+                                                <span>{{ number_format($review['author_details']['rating'] / 2, 1) }}/5</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="text-gray-400 text-sm mb-4">
+                                        {{ \Carbon\Carbon::parse($review['created_at'])->format('M d, Y') }}
+                                    </div>
+                                    <div class="text-gray-300 whitespace-pre-line">
+                                        {{ $review['content'] }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-gray-400 mt-4">No reviews available for this movie yet.</p>
+            @endif
+        </div>
+    </div>
+    {{-- end reviews --}}
 @endsection
