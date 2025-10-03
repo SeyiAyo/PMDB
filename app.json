@@ -1,0 +1,83 @@
+{
+  "name": "PMDB - Panda Movie Database",
+  "description": "A Laravel-based movie database application using The Movie Database API",
+  "repository": "https://github.com/seyiayo/PMDB",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["laravel", "php", "movies", "tmdb", "database"],
+  "image": "heroku/php",
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/php"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "eco"
+    }
+  },
+  "env": {
+    "APP_ENV": {
+      "description": "Application environment",
+      "value": "production"
+    },
+    "APP_DEBUG": {
+      "description": "Enable debug mode",
+      "value": "false"
+    },
+    "APP_KEY": {
+      "description": "Laravel application key",
+      "generator": "secret"
+    },
+    "APP_URL": {
+      "description": "Application URL",
+      "value": "https://your-pmdb-app.herokuapp.com"
+    },
+    "TMDB_TOKEN": {
+      "description": "The Movie Database API Bearer Token",
+      "required": true
+    },
+    "LOG_CHANNEL": {
+      "description": "Log channel",
+      "value": "errorlog"
+    },
+    "SESSION_DRIVER": {
+      "description": "Session driver",
+      "value": "cookie"
+    },
+    "CACHE_DRIVER": {
+      "description": "Cache driver",
+      "value": "file"
+    }
+  },
+  "scripts": {
+    "postdeploy": "php artisan config:cache && php artisan route:cache && php artisan view:cache"
+  },
+  "environments": {
+    "review": {
+      "buildpacks": [
+        {
+          "url": "heroku/nodejs"
+        },
+        {
+          "url": "heroku/php"
+        }
+      ],
+      "env": {
+        "APP_DEBUG": "true",
+        "APP_ENV": "staging"
+      }
+    },
+    "test": {
+      "formation": {
+        "web": {
+          "quantity": 1,
+          "size": "eco"
+        }
+      }
+    }
+  }
+}
