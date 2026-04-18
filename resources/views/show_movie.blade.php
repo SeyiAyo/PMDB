@@ -110,11 +110,19 @@
                 @foreach ($movie['credits']['cast'] as $cast)
                     @if ($loop->index < 10)
                     <div class="mt-8">
-                        <a href="#">
-                            <img src="https://image.tmdb.org/t/p/w500/{{ $cast['profile_path'] }}" alt="" class="hover:opacity-75 transition ease-in-out duration-150">
+                        <a href="{{ route('actors.show', $cast['id']) }}">
+                            @if($cast['profile_path'])
+                                <img src="https://image.tmdb.org/t/p/w500/{{ $cast['profile_path'] }}" alt="{{ $cast['name'] }}" class="hover:opacity-75 transition ease-in-out duration-150">
+                            @else
+                                <div class="bg-gray-800 w-full h-64 flex items-center justify-center rounded hover:opacity-75 transition ease-in-out duration-150">
+                                    <svg class="w-16 h-16 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                            @endif
                         </a>
                         <div class="mt-2">
-                            <div href="#" class="text-lg mt-2 hover:text-gray-300">{{ $cast['name'] }}</div>
+                            <a href="{{ route('actors.show', $cast['id']) }}" class="text-lg mt-2 hover:text-gray-300">{{ $cast['name'] }}</a>
                             <div class="text-gray-400 text-sm">
                                 {{ $cast['character'] }}
                             </div>
