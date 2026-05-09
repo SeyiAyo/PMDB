@@ -1,10 +1,6 @@
 # PMDB - Personal Movie Database
 
 <p align="center">
-  <img src="public/images/logo.png" alt="PMDB Logo" width="200">
-</p>
-
-<p align="center">
   <a href="https://heroku.com/deploy?template=https://github.com/seyiayo/PMDB">
     <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
   </a>
